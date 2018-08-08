@@ -381,14 +381,17 @@ module Cat.Instance.ChainComplexCategory where
                   pn1 = ineq-cmp-onInf k -- Type n ≡ (suc 0)
               in
               ~o t .Functor.raw .fmap {A = k} {B = predℤ k} (lemmaInf k)        ≡⟨⟩
-              transp (λ i → Arrow (t .fst k) (t .fst (pn i))) (n-arrow t n k)   ≡⟨ {!!} ⟩
+              transp (λ i → Arrow (t .fst k) (t .fst (pn i)))              (n-arrow t n k)
+                 ≡⟨ (\ j → transp (λ i → Arrow (t .fst k) (t .fst (isSet-ℤ _ _ pn (\ i → ((predℤ ^ pn1 i) k)) j i))) (n-arrow t n k) ) ⟩
+              transp (λ i → Arrow (t .fst k) (t .fst ((predℤ ^ pn1 i) k))) (n-arrow t n k)   ≡⟨ (fromPathP \ i → n-arrow t (pn1 i) k) ⟩
               (n-arrow t (suc 0) k)                                             ≡⟨ n-arrow-coin t k ⟩ -- n-arrow-coin state that one steps give you back what you want
               t .snd k ∎) j
-          
+           where
+             open IntCategoryM.Lemmas
 
           lemma4 : (IntFunc.RevIntFunc catZ) .Category.raw .RawCategory.Object ≃ ptype
           lemma4 .fst = FtoP
-          lemma4 .snd = gradLemma FtoP PtoF PtoP FtoF 
+          lemma4 .snd = gradLemma FtoP PtoF PtoP FtoF
 
 
 
