@@ -354,19 +354,20 @@ module Cat.Instance.ChainComplexCategory where
             (FtoP t) .fst n                    ≡⟨⟩
             t .Functor.raw .omap n ∎) j
 
-          fmap (Functor.raw (FtoF t j)) {A} {B} b≤a = (begin
-            let k = ineq-cmp-onpred b≤a .fst
-                pk = ineq-cmp-onpred b≤a .snd
-            in
-            PtoF (FtoP t) .Functor.raw .fmap b≤a ≡⟨⟩
-            (transp (λ i → Arrow ((FtoP t) .fst A) ((FtoP t) .fst (pk i))) (n-arrow (FtoP t) k A)) ≡⟨⟩
-            let omap = t .Functor.raw .omap
-            in
-            (transp (λ i → Arrow (omap A) (omap (pk i))) (n-arrow (FtoP t) k A)) ≡⟨ {!!} ⟩
-            
-            t .Functor.raw .fmap b≤a ∎) j
-               
-          
+          fmap (Functor.raw (FtoF t j)) {A} {B} b≤a = aux {A} {k} _ pk b≤a j
+            where
+              k = ineq-cmp-onpred b≤a .fst
+              pk = ineq-cmp-onpred b≤a .snd
+
+              aux : ∀ {A k} B (pk : (predℤ ^ k) A ≡ B) b≤a → (transp (λ i → Arrow (t .Functor.omap A) (t .Functor.omap (pk i))) (n-arrow (FtoP t) k A)) ≡ t .Functor.fmap {A} {B} b≤a
+              aux {A} {k} = pathJ _ \ b≤a →
+                  (begin
+                    transp (λ i → Arrow (Functor.omap t A) (Functor.omap t ((predℤ ^ k) A))) (n-arrow (FtoP t) k A)
+                               ≡⟨ transp-refl (n-arrow (FtoP t) k A) ⟩
+                    (n-arrow (FtoP t) k A) ≡⟨ {!!} ⟩ Functor.fmap t b≤a ∎
+                    )
+
+
           -- Arrows are Sets so should be 'trivial' ...
           IsFunctor.isIdentity (Functor.isFunctor (FtoF t j)) = {!!}
           IsFunctor.isDistributive (Functor.isFunctor (FtoF t j)) = {!!}
